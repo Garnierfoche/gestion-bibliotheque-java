@@ -1,0 +1,36 @@
+#estion de Bibliothèque – Java
+
+## 🎯 Description
+Ce projet est une application Java en console permettant de gérer une bibliothèque.
+Il permet de :
+- gérer les livres
+- gérer les membres
+- enregistrer les emprunts
+- gérer les retours avec pénalités de retard
+
+Le projet respecte les principes de la Programmation Orientée Objet (POO).
+
+---
+
+## 🧱 Fonctionnalités
+- ➕ Ajouter un livre
+- 📖 Afficher les livres
+- 🔍 Rechercher un livre par titre
+- ➕ Ajouter un membre
+- 🔍 Rechercher un membre
+- 🔁 Enregistrer un emprunt
+- ⏱️ Retourner un livre avec calcul automatique des pénalités
+
+> Pénalité : **100 F CFA par jour de retard**
+
+---
+
+## 🛠️ Technologies utilisées
+- Java (JDK 8+)
+- Programmation Orientée Objet (POO)
+- Collections Java (`ArrayList`)
+- Git & GitHub
+
+---
+
+## 📁 Structure du projet
