@@ -5,6 +5,9 @@ public class Main {
 
     public static void main(String[] args) {
 
+
+        DatabaseConnection.getConnection();
+
         Scanner scanner = new Scanner(System.in);
         Bibliotheque bibliotheque = new Bibliotheque();
         int choix;
@@ -37,14 +40,19 @@ public class Main {
                     System.out.print("Auteur : ");
                     String auteur = scanner.nextLine();
 
+                    System.out.print("ISBN : ");
+                    String isbn = scanner.nextLine();
+
+                    System.out.print("Année de publication : ");
+                    int annee = scanner.nextInt();
+                    scanner.nextLine();
+
                     System.out.print("Catégorie : ");
                     String categorie = scanner.nextLine();
 
-                    System.out.print("Nombre d'exemplaires : ");
-                    int nb = scanner.nextInt();
-
-                    Livre livre = new Livre(id, titre, auteur, categorie, nb);
+                    Livre livre = new Livre(id, titre, auteur, isbn, annee, categorie);
                     bibliotheque.ajouterLivre(livre);
+
                     break;
 
                 case 2:
@@ -110,9 +118,17 @@ public class Main {
                     bibliotheque.retournerLivre(idRetour);
                     break;
 
+                case 8:
+                    System.out.println("8. Afficher les emprunts");
+
+                    bibliotheque.afficherEmprunts();
+                    break;
+
+
                 case 0:
                     System.out.println("Au revoir !");
                     break;
+
 
                 default:
                     System.out.println("Choix invalide !");

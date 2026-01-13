@@ -65,4 +65,20 @@ public class Emprunt {
         System.out.println("Retour effectif : " + dateRetourEffective);
         System.out.println("Pénalité : " + calculerPenalite() + " F CFA");
     }
+
+    public int getIdLivre() {
+        return 0;
+    }
+
+    public int getIdMembre() {
+        return 0;
+    }
+
+    public LocalDate getDateEmprunt() {
+        return null;
+    }
+
+    public LocalDate getDateRetour() {
+        return null;
+    }
 }
