@@ -1,50 +1,45 @@
-Gestion de Bibliothèque – Java
+# Library Management System
 
-Description
-Ce projet est une application Java en console permettant de gérer une bibliothèque.
-Il permet de gérer les livres, les membres, les emprunts et les retours avec pénalités.
+Projet réalisé dans le cadre du module **COMC-06: Data & Program Structure**.
 
-Le projet respecte les principes de la Programmation Orientée Objet (POO).
+Ce projet est une application console Java permettant de gérer une bibliothèque
+en utilisant les **structures de données**, les **algorithmes de recherche et de tri**
+et une **base de données PostgreSQL**.
 
-Fonctionnalités
+---
+
+##  Fonctionnalités
+
+###  Gestion des livres
 - Ajouter un livre
 - Afficher les livres
 - Rechercher un livre par titre
+
+### Gestion des membres
 - Ajouter un membre
 - Rechercher un membre par nom
+
+### Gestion des emprunts
 - Enregistrer un emprunt
-- Retourner un livre avec calcul automatique des pénalités
+- Retourner un livre
 
-Pénalité de retard
-100 F CFA par jour de retard.
+---
 
-Technologies utilisées
-- Java (JDK 8 ou plus)
-- Programmation Orientée Objet
-- Collections Java (ArrayList)
-- Git et GitHub
+## Concepts utilisés
 
-Structure du projet
-src/
-- Bibliotheque.java
-- Livre.java
-- Membre.java
-- Emprunt.java
-- Main.java
+- Programmation orientée objet (Java)
+- JDBC (connexion Java ↔ PostgreSQL)
+- Base de données relationnelle
+- Structures de données :
+  - ArrayList (membres)
+  - Base de données (livres, emprunts)
+- Algorithmes :
+  - Recherche par titre (SQL LIKE)
 
-Exécution du programme
+---
 
-Compilation :
-javac *.java
+## 🗄️ Base de données
 
-Exécution :
-java Main
+Le projet utilise **PostgreSQL**.
+La structure de la base est fournie dans le fichier :
 
-Diagramme UML
-Le projet est accompagné d’un diagramme UML présentant les classes :
-Livre, Membre, Emprunt et Bibliotheque, ainsi que leurs relations.
-
-Auteur
-Foche Garnier
-
-Projet académique – Gestion de Bibliothèque en Java

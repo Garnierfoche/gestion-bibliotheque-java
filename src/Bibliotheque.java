@@ -2,22 +2,19 @@ import java.util.ArrayList;
 import java.time.LocalDate;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
-
+import java.sql.SQLException;
 
 public class Bibliotheque {
 
 
-
     private ArrayList<Membre> membres;
-    private ArrayList<Emprunt> emprunts;
 
     public Bibliotheque() {
         membres = new ArrayList<>();
-        emprunts = new ArrayList<>();
     }
+
 
     public void ajouterLivre(Livre livre) {
 
@@ -34,38 +31,40 @@ public class Bibliotheque {
             pstmt.setString(5, livre.getCategorie());
 
             pstmt.executeUpdate();
-            System.out.println("📘 Livre ajouté avec succès dans la base");
+            System.out.println(" Livre ajouté avec succès dans la base de données");
 
         } catch (SQLException e) {
+            System.out.println("Erreur lors de l'ajout du livre");
             e.printStackTrace();
         }
     }
 
-
-    // (sera connecté à PostgreSQL plus tard)
     public void afficherLivres() {
 
-        String sql = "SELECT title, author, genre FROM books ORDER BY id";
+        String sql = "SELECT id, title, author, isbn, publication_year, genre FROM books ORDER BY id";
 
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
-            System.out.println("\nLISTE DES LIVRES");
+            System.out.println(" LISTE DES LIVRES");
             System.out.println("--------------------");
 
             boolean vide = true;
 
             while (rs.next()) {
                 vide = false;
+                System.out.println("ID : " + rs.getInt("id"));
                 System.out.println("Titre : " + rs.getString("title"));
                 System.out.println("Auteur : " + rs.getString("author"));
+                System.out.println("ISBN : " + rs.getString("isbn"));
+                System.out.println("Année : " + rs.getInt("publication_year"));
                 System.out.println("Catégorie : " + rs.getString("genre"));
                 System.out.println("--------------------");
             }
 
             if (vide) {
-                System.out.println("Aucun livre dans la base de données.");
+                System.out.println("Aucun livre trouvé.");
             }
 
         } catch (SQLException e) {
@@ -76,40 +75,45 @@ public class Bibliotheque {
 
     public void rechercherLivreParTitre(String titre) {
 
-        String sql = "SELECT title, author, genre FROM books "
-                + "WHERE LOWER(title) LIKE LOWER(?)";
+        String sql = "SELECT title, author, isbn, publication_year, genre "
+                + "FROM books WHERE LOWER(title) LIKE LOWER(?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, "%" + titre + "%");
-
             ResultSet rs = pstmt.executeQuery();
 
             boolean trouve = false;
 
             while (rs.next()) {
                 trouve = true;
-                System.out.println("\n LIVRE TROUVÉ");
+                System.out.println(" LIVRE TROUVÉ");
                 System.out.println("Titre : " + rs.getString("title"));
                 System.out.println("Auteur : " + rs.getString("author"));
+                System.out.println("ISBN : " + rs.getString("isbn"));
+                System.out.println("Année : " + rs.getInt("publication_year"));
                 System.out.println("Catégorie : " + rs.getString("genre"));
                 System.out.println("--------------------");
             }
 
             if (!trouve) {
-                System.out.println("❌ Aucun livre trouvé avec ce titre.");
+                System.out.println("❌ Aucun livre trouvé.");
             }
 
         } catch (SQLException e) {
-            System.out.println("❌ Erreur lors de la recherche du livre");
+            System.out.println("❌ Erreur lors de la recherche");
             e.printStackTrace();
         }
     }
 
+    // =========================
+    // 👤 MEMBRES (MÉMOIRE)
+    // =========================
+
     public void ajouterMembre(Membre membre) {
         membres.add(membre);
-        System.out.println("Membre inscrit avec succès !");
+        System.out.println(" Membre inscrit avec succès !");
     }
 
     public void rechercherMembreParNom(String nom) {
@@ -121,7 +125,6 @@ public class Bibliotheque {
         }
         System.out.println("Membre non trouvé.");
     }
-
 
     public void enregistrerEmprunt(Emprunt emprunt) {
 
@@ -137,58 +140,34 @@ public class Bibliotheque {
             pstmt.setDate(4, java.sql.Date.valueOf(emprunt.getDateRetour()));
 
             pstmt.executeUpdate();
-            System.out.println("📄 Emprunt enregistré en base");
+            System.out.println("Emprunt enregistré avec succès !");
 
         } catch (SQLException e) {
+            System.out.println("❌ Erreur lors de l'enregistrement de l'emprunt");
             e.printStackTrace();
         }
     }
-
 
     public void retournerLivre(int idEmprunt) {
-        for (Emprunt e : emprunts) {
-            if (e.getIdEmprunt() == idEmprunt) {
-                e.setDateRetourEffective(LocalDate.now());
-                System.out.println("Livre retourné.");
-                System.out.println("Pénalité : " + e.calculerPenalite() + " F CFA");
-                return;
-            }
-        }
-        System.out.println("Emprunt introuvable.");
-    }
-    public void afficherEmprunts() {
 
-        String sql =
-                "SELECT e.id, e.membre_id, e.livre_id, e.date_emprunt, e.date_retour " +
-                        "FROM emprunts e ORDER BY e.id DESC";
+        String sql = "UPDATE emprunts SET date_retour = CURRENT_DATE "
+                + "WHERE id = ? AND date_retour IS NULL";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            System.out.println("\n📄 LISTE DES EMPRUNTS");
-            System.out.println("--------------------");
+            pstmt.setInt(1, idEmprunt);
+            int lignes = pstmt.executeUpdate();
 
-            boolean vide = true;
-
-            while (rs.next()) {
-                vide = false;
-                System.out.println("Emprunt ID : " + rs.getInt("id"));
-                System.out.println("ID Membre  : " + rs.getInt("membre_id"));
-                System.out.println("ID Livre   : " + rs.getInt("livre_id"));
-                System.out.println("Date emprunt : " + rs.getDate("date_emprunt"));
-                System.out.println("Date retour  : " + rs.getDate("date_retour"));
-                System.out.println("--------------------");
-            }
-
-            if (vide) {
-                System.out.println("Aucun emprunt enregistré.");
+            if (lignes > 0) {
+                System.out.println("Livre retourné avec succès !");
+            } else {
+                System.out.println(" Emprunt introuvable ou déjà retourné.");
             }
 
         } catch (SQLException e) {
-            System.out.println("❌ Erreur lors de l'affichage des emprunts");
+            System.out.println("❌ Erreur lors du retour du livre");
             e.printStackTrace();
         }
     }
-
 }
